@@ -1,0 +1,99 @@
+create database Riteve
+use Riteve
+
+create table Placa(
+IdPlaca int identity primary key,
+NumPlaca int unique,
+IdUsuario int,
+Monto money default 0,
+constraint fk_IdUsuario foreign key(IdUsuario) references Usuarios(IdUsuario)
+)
+
+
+create table Usuarios(
+IdUsuario int identity(1,1) primary key,
+Usuario varchar(50),
+Clave varchar(30),
+Nombre varchar(50),
+Apellido varchar(50)
+)
+
+/* Procedimientos almacenados para Usuarios */
+
+
+create procedure ValidarUsuario
+@Usuario nvarchar(50),
+@Clave nvarchar(30)
+as
+  begin
+     select * from Usuarios where Usuario=@Usuario and Clave=@Clave
+  end
+
+
+
+create procedure IngresarUsuario
+@Usuario varchar(50),
+@Clave varchar(30),
+@Nombre varchar(50),
+@Apellido varchar(50)
+as
+begin
+    insert into Usuarios (Usuario,Clave,Nombre,Apellido) values (@Usuario,@Clave,@Nombre,@Apellido)
+end
+
+exec IngresarUsuario 'juang', '124', 'juan', 'leon'
+
+
+
+
+create procedure ActualizarUsuario
+@Usuario varchar(50),
+@Clave varchar(30),
+@Nombre varchar(50),
+@Apellido varchar(50)
+as
+begin
+    update Usuarios set Clave=@Clave,Nombre=@Nombre,Apellido=@Apellido where Usuario=@Usuario
+end
+
+
+create procedure borrarUsuario
+  @Usuario varchar(50)
+as
+  begin
+     delete Usuarios where Usuario=@Usuario
+  end
+
+
+  /* Procedimientos almacenados para placas */
+
+  
+  alter procedure IngresarPlaca
+@NumPlaca int,
+@IdUsuario int,
+@Monto money
+as
+begin
+    insert into Placa (NumPlaca,IdUsuario,Monto) values (@NumPlaca,@IdUsuario,@Monto)
+end
+
+exec IngresarPlaca '678980','1', 6000
+
+create procedure ActualizarPlaca
+@NumPlaca int,
+@IdUsuario int,
+@Monto money
+as
+begin
+    update Placa set IdUsuario=@IdUsuario,Monto=@Monto where NumPlaca=@NumPlaca
+end
+
+
+create procedure borrarPlaca
+  @NumPlaca int
+as
+  begin
+     delete Placa where NumPlaca=@NumPlaca
+  end
+  exec borrarPlaca '678980'
+
